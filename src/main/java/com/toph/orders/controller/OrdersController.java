@@ -3,6 +3,7 @@ package com.toph.orders.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.toph.orders.service.InventoryService;
 import com.toph.orders.service.CartService;
 import com.toph.orders.service.UserService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class OrdersController {
 
@@ -106,6 +108,15 @@ public class OrdersController {
         return this.cartService.getCartById(Integer.parseInt(id));
     }
 
+    @GetMapping("/carts/{id}/total")
+    public float getCartTotal(@PathVariable String id) {
+        float total = 0f;
+        for (int itemId : this.cartService.getCartById(Integer.parseInt(id)).getItemIds()) {
+            total += this.inventoryService.getItemById(itemId).getPrice();
+        }
+        return total;
+    }
+
     @PostMapping("/carts")
     public Cart addCart(@RequestBody Cart cart) {
         return this.cartService.saveCart(cart);
@@ -116,13 +127,25 @@ public class OrdersController {
         return this.cartService.saveCart(cart);
     }
 
+    @PutMapping("/carts/{id}/{itemId}")
+    public Cart addItemToCart(@PathVariable String id, @PathVariable String itemId) {
+        this.cartService.getCartById(Integer.parseInt(id)).getItemIds().add(Integer.parseInt(itemId));
+        return this.cartService.saveCart(this.cartService.getCartById(Integer.parseInt(id)));
+    }
+
     @DeleteMapping("/carts/{id}")
-    public String delteCart(@PathVariable String id) {
+    public String deleteCart(@PathVariable String id) {
         return this.cartService.deleteCartById(Integer.parseInt(id));
 
     }
 
-    /////////////////////
-    // * FUNCTIONALITY //
-    /////////////////////
+    @DeleteMapping("/carts/{id}/{itemId}")
+    public String deleteItemFromCart(@PathVariable String id, @PathVariable String itemId) {
+
+        this.cartService.getCartById(Integer.parseInt(id)).getItemIds().remove(Integer.parseInt(itemId));
+        this.cartService.saveCart(this.cartService.getCartById(Integer.parseInt(id)));
+        return "Deleted Item of id: " + itemId;
+
+    }
+
 }

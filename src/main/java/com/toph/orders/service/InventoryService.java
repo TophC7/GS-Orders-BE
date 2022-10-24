@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import com.toph.orders.dao.IventoryDao;
 import com.toph.orders.entity.Item;
 
-// TODO TEST THIS????
-// ? this shit weird why am i returnin item when its iventory 🤷🏼
+// TODO ????
+// ? this is weird why am i returning item when its iventory 🤷🏼🤷🏼🤷🏼🤷🏼
 @Service
 public class InventoryService {
 
