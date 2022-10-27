@@ -3,6 +3,7 @@ from flask import Flask, redirect, render_template, session
 import pymongo
 
 app = Flask(__name__)
+# INFO: to create key: python -c 'import os; print(os.urandom(16))'
 app.secret_key = b"\x98=\xa0V\xcd\x95e\xa43w\x11\xde\x13\xd2i\xa0"
 
 # Database
